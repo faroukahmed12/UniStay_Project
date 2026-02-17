@@ -14,14 +14,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Setter
 @Getter
-@ToString
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name="users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name="user_id")
     private Long id;
 
     @Column(name = "name", nullable = false,length = 100)

@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class HousingApplication {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "housing_application_id")
     private Long id;
 
     @Column(name = "documentation_path")
@@ -42,6 +42,7 @@ public class HousingApplication {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewed_by")
+    @JsonIgnore
     private Admin reviewedBy;
 
     @PrePersist

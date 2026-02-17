@@ -18,8 +18,7 @@ public class UniversityHousingManagementSystemApplication {
     public CommandLineRunner commandLineRunner ()
     {
         return runner -> {
-            Test t=new Test();
-            t.print();
+
         };
     }
 

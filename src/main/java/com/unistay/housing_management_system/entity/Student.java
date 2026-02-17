@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
-@ToString
 @EqualsAndHashCode(callSuper = true)
 @DiscriminatorValue("STUDENT")
 @PrimaryKeyJoinColumn(name = "id")
@@ -41,6 +40,15 @@ public class Student extends User{
     private String address;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<HousingApplication> housingApplicationList = new ArrayList<>();;
+    private List<HousingApplication> housingApplicationList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MaintenanceRequest> maintenanceRequestList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<RoomAssignment> roomAssignments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<RoomChangeRequest> roomChangeRequests = new ArrayList<>();
 
 }
