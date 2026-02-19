@@ -15,6 +15,6 @@ public class HousingApplicationResponseDto {
     private LocalDate reviewDate;
     private String rejectionReason;
 
-    private StudentDto studentDto;
-    private AdminDto reviewedById;
+    private StudentDto student;
+    private AdminDto reviewedBy;
 }

@@ -13,8 +13,8 @@ public class RoomChangeResponseDto {
     private LocalDate requestDate;
     private LocalDate reviewDate;
 
-    private StudentDto studentDto;
+    private StudentDto student;
     private AdminDto reviewedBy;
-    private RoomResponseDto currentRoomDto;
-    private RoomResponseDto requestedRoomDto;
+    private RoomResponseDto currentRoom;
+    private RoomResponseDto requestedRoom;
 }

@@ -13,10 +13,8 @@ public class MaintenanceResponseDto {
     private LocalDateTime resolvedDate;
     private String notes;
 
-
-
-    private StudentDto studentDto;
-    private MaintenanceStaffDto assignedStaffId;
-    private BuildingResponseDto buildingResponseDto;
-    private RoomResponseDto roomResponseDto;
+    private StudentDto student;
+    private MaintenanceStaffDto assignedStaff;
+    private BuildingResponseDto building;
+    private RoomResponseDto room;
 }
