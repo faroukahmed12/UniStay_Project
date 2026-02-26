@@ -5,6 +5,7 @@ import com.unistay.housing_management_system.dtos.request.RoomRequestDto;
 import com.unistay.housing_management_system.dtos.response.RoomResponseDto;
 import com.unistay.housing_management_system.entity.Building;
 import com.unistay.housing_management_system.entity.Room;
+import com.unistay.housing_management_system.exceptions.ResourceNotFoundException;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -37,12 +38,12 @@ public abstract class RoomMapper {
     @AfterMapping
     protected void setBuilding(RoomRequestDto dto, @MappingTarget Room room) {
         Building building = buildingRepository.findByBuildingName(dto.getBuildingName())
-                .orElseThrow(() -> new RuntimeException("Building not found: " + dto.getBuildingName()));
+                .orElseThrow(() -> new ResourceNotFoundException("Building not found with name: " + dto.getBuildingName()));
         room.setBuilding(building);
     }
 
     /*
-    // Update existing entity (للـ PUT requests)
+    // Update existing entity (for PUT requests)
     @Mapping(target = "roomId", ignore = true)
     @Mapping(target = "building", ignore = true)
     @Mapping(target = "roomAssignments", ignore = true)

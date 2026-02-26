@@ -5,8 +5,11 @@ import com.unistay.housing_management_system.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    @Mapping(target = "hashedPassword", ignore = true)
     UserDto toDto(User user);
+
+    List<UserDto> toDtoList(List<User> users);
 }

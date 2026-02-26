@@ -8,6 +8,7 @@ import com.unistay.housing_management_system.dtos.request.MaintenanceRequestCrea
 import com.unistay.housing_management_system.dtos.request.MaintenanceRequestUpdateDto;
 import com.unistay.housing_management_system.dtos.response.MaintenanceResponseDto;
 import com.unistay.housing_management_system.entity.*;
+import com.unistay.housing_management_system.exceptions.ResourceNotFoundException;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -52,13 +53,13 @@ public abstract class MaintenanceRequestMapper {
                                       @MappingTarget MaintenanceRequest entity) {
 
         Student student = studentRepository.findById(dto.getStudentId())
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + dto.getStudentId()));
 
         Building building = buildingRepository.findByBuildingName(dto.getBuildingName())
-                .orElseThrow(() -> new RuntimeException("Building not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Building not found with name: " + dto.getBuildingName()));
 
         Room room = roomRepository.findByRoomNumber(dto.getRoomNumber())
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found with number: " + dto.getRoomNumber()));
 
         entity.setStudent(student);
         entity.setBuilding(building);
@@ -80,7 +81,7 @@ public abstract class MaintenanceRequestMapper {
                                       @MappingTarget MaintenanceRequest entity) {
         if (dto.getAssignedStaffId() != null) {
             MaintenanceStaff staff = maintenanceStaffRepository.findById(dto.getAssignedStaffId())
-                    .orElseThrow(() -> new RuntimeException("Staff not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Maintenance staff not found with ID: " + dto.getAssignedStaffId()));
             entity.setAssignedStaff(staff);
         }
     }

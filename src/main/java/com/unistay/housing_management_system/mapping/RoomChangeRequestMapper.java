@@ -10,6 +10,8 @@ import com.unistay.housing_management_system.entity.Admin;
 import com.unistay.housing_management_system.entity.Room;
 import com.unistay.housing_management_system.entity.RoomChangeRequest;
 import com.unistay.housing_management_system.entity.Student;
+import com.unistay.housing_management_system.exceptions.ResourceAlreadyExistsException;
+import com.unistay.housing_management_system.exceptions.ResourceNotFoundException;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -54,17 +56,17 @@ public abstract class RoomChangeRequestMapper {
                                       @MappingTarget RoomChangeRequest entity) {
 
         Student student = studentRepository.findByUniversityId(dto.getStudentUniversityId())
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with university ID: " + dto.getStudentUniversityId()));
 
         Room currentRoom = roomRepository.findByRoomNumber(dto.getCurrentRoomNumber())
-                .orElseThrow(() -> new RuntimeException("Current room not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Current room not found with number: " + dto.getCurrentRoomNumber()));
 
         entity.setStudent(student);
         entity.setCurrentRoom(currentRoom);
 
         if (dto.getRequestedRoomNumber() != null) {
             Room requestedRoom = roomRepository.findByRoomNumber(dto.getRequestedRoomNumber())
-                    .orElseThrow(() -> new RuntimeException("Requested room not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Requested room not found with number: " + dto.getRequestedRoomNumber()));
             entity.setRequestedRoom(requestedRoom);
         }
     }
@@ -86,12 +88,12 @@ public abstract class RoomChangeRequestMapper {
                                       @MappingTarget RoomChangeRequest entity) {
 
         Admin admin = adminRepository.findById(dto.getReviewedById())
-                .orElseThrow(() -> new RuntimeException("Admin not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found with ID: " + dto.getReviewedById()));
         entity.setReviewedBy(admin);
 
         if (dto.getRequestedRoomNumber() != null) {
             Room requestedRoom = roomRepository.findByRoomNumber(dto.getRequestedRoomNumber())
-                    .orElseThrow(() -> new RuntimeException("Requested room not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Requested room not found with number: " + dto.getRequestedRoomNumber()));
             entity.setRequestedRoom(requestedRoom);
         }
     }

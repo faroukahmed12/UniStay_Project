@@ -10,6 +10,7 @@ import com.unistay.housing_management_system.entity.Admin;
 import com.unistay.housing_management_system.entity.Room;
 import com.unistay.housing_management_system.entity.RoomAssignment;
 import com.unistay.housing_management_system.entity.Student;
+import com.unistay.housing_management_system.exceptions.ResourceNotFoundException;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -50,13 +51,13 @@ public abstract class RoomAssignmentMapper {
     protected void setCreateRelations(RoomAssignmentCreateDto dto,
                                       @MappingTarget RoomAssignment entity) {
         Student student = studentRepository.findByUniversityId(dto.getUniversityId())
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with university ID: " + dto.getUniversityId()));
 
         Room room = roomRepository.findByRoomNumber(dto.getRoomNumber())
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found with number: " + dto.getRoomNumber()));
 
         Admin admin = adminRepository.findById(dto.getAssignedById())
-                .orElseThrow(() -> new RuntimeException("Admin not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found with ID: " + dto.getAssignedById()));
 
         entity.setStudent(student);
         entity.setRoom(room);
@@ -77,7 +78,7 @@ public abstract class RoomAssignmentMapper {
     protected void setUpdateRelations(RoomAssignmentUpdateDto dto,
                                       @MappingTarget RoomAssignment entity) {
         Room room = roomRepository.findByRoomNumber(dto.getRoomNumber())
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found with number: " + dto.getRoomNumber()));
         entity.setRoom(room);
     }
 }

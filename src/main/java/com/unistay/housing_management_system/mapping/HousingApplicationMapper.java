@@ -8,6 +8,7 @@ import com.unistay.housing_management_system.dtos.response.HousingApplicationRes
 import com.unistay.housing_management_system.entity.Admin;
 import com.unistay.housing_management_system.entity.HousingApplication;
 import com.unistay.housing_management_system.entity.Student;
+import com.unistay.housing_management_system.exceptions.ResourceNotFoundException;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -44,7 +45,7 @@ public abstract class HousingApplicationMapper {
     protected void setCreateRelations(HousingApplicationRequestCreateDto dto,
                                       @MappingTarget HousingApplication entity) {
         Student student = studentRepository.findByUniversityId(dto.getUniversityId())
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with university ID: " + dto.getUniversityId()));
         entity.setStudent(student);
     }
 
@@ -61,7 +62,7 @@ public abstract class HousingApplicationMapper {
     protected void setReviewRelations(HousingApplicationRequestReviewDto dto,
                                       @MappingTarget HousingApplication entity) {
         Admin admin = adminRepository.findById(dto.getReviewedById())
-                .orElseThrow(() -> new RuntimeException("Admin not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found with ID: " + dto.getReviewedById()));
         entity.setReviewedBy(admin);
     }
 }
