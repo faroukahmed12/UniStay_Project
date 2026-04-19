@@ -5,8 +5,8 @@ import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class StudentDto extends UserDto{
     private String nationalId;
     private String universityId;

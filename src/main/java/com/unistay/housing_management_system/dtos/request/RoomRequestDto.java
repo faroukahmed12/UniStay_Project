@@ -21,10 +21,8 @@ public class RoomRequestDto {
 
     private RoomStatus status = RoomStatus.AVAILABLE;
 
-    /*
     @NotNull(message = "Building ID is required")
     private Long buildingId;
-    */
 
     @NotBlank(message = "Building Name is required")
     @Size(max = 30)

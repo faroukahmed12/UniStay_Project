@@ -2,8 +2,6 @@ package com.unistay.housing_management_system.controllers;
 
 import com.unistay.housing_management_system.dtos.response.UserDto;
 import com.unistay.housing_management_system.services.UserService;
-import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

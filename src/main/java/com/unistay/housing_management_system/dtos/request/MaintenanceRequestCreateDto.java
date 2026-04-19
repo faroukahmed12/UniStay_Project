@@ -17,14 +17,15 @@ public class MaintenanceRequestCreateDto {
     @NotNull(message = "Student ID is required")
     private Long studentId;
 
-    /*@NotNull(message = "Building ID is required")
-    private Long buildingId;*/
+    @NotNull(message = "Building ID is required")
+    private Long buildingId;
+
     @NotNull(message = "Building ID is required")
     private String buildingName;
 
-    /*
     @NotNull(message = "Room ID is required")
-    private Long roomId;*/
+    private Long roomId;
+
     @NotNull(message = "Room Number is required")
     private String roomNumber;
 

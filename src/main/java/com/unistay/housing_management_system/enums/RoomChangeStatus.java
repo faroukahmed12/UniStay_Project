@@ -4,5 +4,4 @@ public enum RoomChangeStatus {
     PENDING,
     APPROVED,
     REJECTED,
-    COMPLETED
 }

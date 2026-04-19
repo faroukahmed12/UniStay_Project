@@ -70,31 +70,4 @@ public abstract class RoomChangeRequestMapper {
             entity.setRequestedRoom(requestedRoom);
         }
     }
-
-
-    @Mapping(target = "requestId", ignore = true)
-    @Mapping(target = "reason", ignore = true)
-    @Mapping(target = "requestDate", ignore = true)
-    @Mapping(target = "student", ignore = true)
-    @Mapping(target = "currentRoom", ignore = true)
-    @Mapping(target = "reviewedBy", ignore = true)
-    @Mapping(target = "requestedRoom", ignore = true)
-    @Mapping(target = "reviewDate", expression = "java(java.time.LocalDate.now())")
-    public abstract void updateEntityFromDto(RoomChangeRequestUpdateDto dto,
-                                             @MappingTarget RoomChangeRequest entity);
-
-    @AfterMapping
-    protected void setUpdateRelations(RoomChangeRequestUpdateDto dto,
-                                      @MappingTarget RoomChangeRequest entity) {
-
-        Admin admin = adminRepository.findById(dto.getReviewedById())
-                .orElseThrow(() -> new ResourceNotFoundException("Admin not found with ID: " + dto.getReviewedById()));
-        entity.setReviewedBy(admin);
-
-        if (dto.getRequestedRoomNumber() != null) {
-            Room requestedRoom = roomRepository.findByRoomNumber(dto.getRequestedRoomNumber())
-                    .orElseThrow(() -> new ResourceNotFoundException("Requested room not found with number: " + dto.getRequestedRoomNumber()));
-            entity.setRequestedRoom(requestedRoom);
-        }
-    }
 }

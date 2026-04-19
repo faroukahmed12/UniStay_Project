@@ -4,5 +4,5 @@ public enum HousingApplicationStatus {
     PENDING,
     APPROVED,
     REJECTED,
-    WITHDRAWN
+    REQUIRES_DOCUMENTS
 }
