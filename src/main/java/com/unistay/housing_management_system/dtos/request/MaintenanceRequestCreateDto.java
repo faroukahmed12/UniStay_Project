@@ -14,8 +14,8 @@ public class MaintenanceRequestCreateDto {
     @NotBlank(message = "Description is required")
     private String description;
 
-    @NotNull(message = "Student ID is required")
-    private Long studentId;
+    //@NotNull(message = "Student ID is required")
+    //private String studentId;
 
     @NotNull(message = "Building ID is required")
     private Long buildingId;

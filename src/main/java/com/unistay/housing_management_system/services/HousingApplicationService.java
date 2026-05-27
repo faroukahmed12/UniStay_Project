@@ -1,7 +1,6 @@
 package com.unistay.housing_management_system.services;
 
 import com.unistay.housing_management_system.Repository.HousingApplicationRepository;
-import com.unistay.housing_management_system.dtos.request.HousingApplicationRequestCreateDto;
 import com.unistay.housing_management_system.dtos.response.HousingApplicationResponseDto;
 import com.unistay.housing_management_system.entity.Admin;
 import com.unistay.housing_management_system.entity.HousingApplication;
@@ -10,12 +9,14 @@ import com.unistay.housing_management_system.enums.HousingApplicationStatus;
 import com.unistay.housing_management_system.exceptions.InvalidStatusTransitionException;
 import com.unistay.housing_management_system.exceptions.ResourceAlreadyExistsException;
 import com.unistay.housing_management_system.exceptions.ResourceNotFoundException;
-import com.unistay.housing_management_system.mapping.HousingApplicationMapperImpl;
+import com.unistay.housing_management_system.mapping.HousingApplicationMapper;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,28 +30,25 @@ public class HousingApplicationService {
     private static final Logger logger = LoggerFactory.getLogger(HousingApplicationService.class);
     private final StudentService studentService;
     private final AdminService adminService;
-    private final HousingApplicationMapperImpl housingApplicationMapper;
+    private final HousingApplicationMapper housingApplicationMapper;
     private final HousingApplicationRepository housingApplicationRepository;
     private final AuthService authService;
 
     @Transactional
-    public HousingApplicationResponseDto createHousingApplication(HousingApplicationRequestCreateDto dto) {
-        // check if student exists
-        Student student = studentService.getStudentByUniversityId(dto.getUniversityId());
+    public HousingApplicationResponseDto createApplication(String universityId, String filePath) {
+        Student student = studentService.getStudentByUniversityId(universityId);
 
-        // check if student has a pending application
-        boolean hasPendingApplication = hasPendingApplication(student);
-        if (hasPendingApplication) {
+        if (hasPendingApplication(student)) {
             logger.warn("Student [{}] already has a pending housing application", student.getId());
             throw new ResourceAlreadyExistsException("Student already has a pending housing application");
         }
 
-        // create housing application
-        HousingApplication housingApplication = housingApplicationMapper.toEntity(dto);
+        HousingApplication housingApplication = new HousingApplication();
         housingApplication.setStudent(student);
+        housingApplication.setDocumentationPath(filePath);
         housingApplicationRepository.save(housingApplication);
-        logger.info("Created housing application for student with university ID: {}", dto.getUniversityId());
 
+        logger.info("Created housing application for student [{}] filePath=[{}]", universityId, filePath);
         return housingApplicationMapper.toDto(housingApplication);
     }
 
@@ -81,9 +79,22 @@ public class HousingApplicationService {
                 .collect(Collectors.toList());
     }
 
+    public long getPendingHousingApplicationsCount() {
+        long count = housingApplicationRepository.countByStatus(HousingApplicationStatus.PENDING);
+        logger.info("Pending housing applications count: {}", count);
+        return count;
+    }
+
     @Transactional
     public HousingApplicationResponseDto updateHousingApplicationStatus(Long applicationId,
                                                                         HousingApplicationStatus newStatus) {
+        return updateHousingApplicationStatus(applicationId, newStatus, null);
+    }
+
+    @Transactional
+    public HousingApplicationResponseDto updateHousingApplicationStatus(Long applicationId,
+                                                                        HousingApplicationStatus newStatus,
+                                                                        String rejectionReason) {
         logger.info("Admin updating status of application [{}] to [{}]", applicationId, newStatus);
 
         HousingApplication application = housingApplicationRepository.findById(applicationId)
@@ -95,10 +106,24 @@ public class HousingApplicationService {
         validateStatusTransition(application.getStatus(), newStatus);
 
         Long currentAdmin = authService.getCurrentUserId();
+        if (currentAdmin == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthenticated admin");
+        }
         Admin admin = adminService.getAdminById(currentAdmin);
 
         application.setStatus(newStatus);
         application.setReviewDate(LocalDate.now());
+
+        if (newStatus == HousingApplicationStatus.REJECTED) {
+            if (rejectionReason == null || rejectionReason.trim().isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rejection reason is required when rejecting an application");
+            }
+            application.setRejectionReason(rejectionReason.trim());
+        } else {
+            // Clear any existing rejection reason if status is not rejected
+            application.setRejectionReason(null);
+        }
+
         application.setReviewedBy(admin);
         housingApplicationRepository.save(application);
         logger.info("Updated housing application status for application id: {} to {} by {}", applicationId, newStatus, admin.getName());
@@ -142,6 +167,8 @@ public class HousingApplicationService {
             throw new InvalidStatusTransitionException("Application is already in status: " + current);
         }
     }
+
+
 }
 
  /*

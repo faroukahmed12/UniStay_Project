@@ -5,3 +5,18 @@ public enum UserType {
     ADMIN,
     MAINTENANCE_STAFF
 }
+
+/*
+public enum UserType implements GrantedAuthority
+{
+    STUDENT,
+    ADMIN,
+    MAINTENANCE_STAFF;
+
+    @Override
+    public String getAuthority()
+    {
+        return "";
+    }
+}
+*/

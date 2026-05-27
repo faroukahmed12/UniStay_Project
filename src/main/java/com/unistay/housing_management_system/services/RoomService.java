@@ -81,6 +81,23 @@ public class RoomService {
         return roomMapper.toDtoList(rooms);
     }
 
+    public List<RoomResponseDto> getAvailableRoomsByBuildingName(String buildingName) {
+        logger.info("Fetching available rooms for building name: {}", buildingName);
+
+        List<Room> rooms = roomRepository.findByBuilding_BuildingNameIgnoreCaseAndStatus(
+                buildingName, RoomStatus.AVAILABLE);
+
+        if (rooms.isEmpty()) {
+            logger.warn("No available rooms found for building name: {}", buildingName);
+            throw new ResourceNotFoundException(
+                    "No available rooms found for building: " + buildingName);
+        }
+        logger.info("Found {} available rooms in building: {}", rooms.size(), buildingName);
+        return roomMapper.toDtoList(rooms);
+    }
+
+
+
     @Transactional
     public RoomResponseDto updateRoom(Long id, RoomRequestDto dto) {
         logger.info("Updating room with id: {}", id);
@@ -132,6 +149,7 @@ public class RoomService {
                     return new ResourceNotFoundException("Room not found with number: " + roomNumber);
                 });
     }
+
 
     /**
      * Increments occupiedBeds by 1 after a student is assigned.

@@ -25,7 +25,6 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoomResponseDto> createRoom(
             @Valid @RequestBody RoomRequestDto dto) {
         logger.info("POST /api/rooms — roomNumber: {}, buildingId: {}",
@@ -34,7 +33,6 @@ public class RoomController {
     }
 
     @GetMapping
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RoomResponseDto>> getAllRooms(
             @RequestParam(required = false) RoomStatus status) {
         logger.info("GET /api/rooms — status filter: {}", status);
@@ -47,22 +45,26 @@ public class RoomController {
     }
 
     @GetMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoomResponseDto> getRoomById(@PathVariable Long id) {
         logger.info("GET /api/rooms/{}", id);
         return ResponseEntity.ok(roomService.getRoomDtoById(id));
     }
 
     @GetMapping("/building/{buildingId}")
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RoomResponseDto>> getRoomsByBuilding(
             @PathVariable Long buildingId) {
         logger.info("GET /api/rooms/building/{}", buildingId);
         return ResponseEntity.ok(roomService.getRoomsByBuilding(buildingId));
     }
 
+    @GetMapping("/available")
+    public ResponseEntity<List<RoomResponseDto>> getAvailableRoomsByBuildingName(
+            @RequestParam String buildingName) {
+        logger.info("GET /api/rooms/available?buildingName={}", buildingName);
+        return ResponseEntity.ok(roomService.getAvailableRoomsByBuildingName(buildingName));
+    }
+
     @PutMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoomResponseDto> updateRoom(
             @PathVariable Long id,
             @Valid @RequestBody RoomRequestDto dto) {
@@ -71,7 +73,6 @@ public class RoomController {
     }
 
     @DeleteMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteRoom(@PathVariable Long id) {
         logger.info("DELETE /api/rooms/{}", id);
         roomService.deleteRoom(id);

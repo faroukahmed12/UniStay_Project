@@ -9,6 +9,7 @@ import com.unistay.housing_management_system.dtos.request.MaintenanceRequestUpda
 import com.unistay.housing_management_system.dtos.response.MaintenanceResponseDto;
 import com.unistay.housing_management_system.entity.*;
 import com.unistay.housing_management_system.exceptions.ResourceNotFoundException;
+import com.unistay.housing_management_system.services.AuthService;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -33,6 +34,9 @@ public abstract class MaintenanceRequestMapper {
     @Autowired
     private MaintenanceStaffRepository maintenanceStaffRepository;
 
+    @Autowired
+    private AuthService authService;
+
 
     public abstract MaintenanceResponseDto toDto(MaintenanceRequest maintenanceRequest);
     public abstract List<MaintenanceResponseDto> toDtoList(List<MaintenanceRequest> maintenanceRequests);
@@ -52,8 +56,8 @@ public abstract class MaintenanceRequestMapper {
     protected void setCreateRelations(MaintenanceRequestCreateDto dto,
                                       @MappingTarget MaintenanceRequest entity) {
 
-        Student student = studentRepository.findById(dto.getStudentId())
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + dto.getStudentId()));
+        Student student = studentRepository.findById(authService.getCurrentUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + authService.getCurrentUserId()));
 
         Building building = buildingRepository.findByBuildingName(dto.getBuildingName())
                 .orElseThrow(() -> new ResourceNotFoundException("Building not found with name: " + dto.getBuildingName()));

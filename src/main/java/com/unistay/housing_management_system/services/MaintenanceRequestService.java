@@ -41,9 +41,9 @@ public class MaintenanceRequestService {
     @Transactional
     public MaintenanceResponseDto createRequest(MaintenanceRequestCreateDto dto) {
         logger.info("Student [{}] submitting maintenance request — issueType: {}, room: {}, building: {}",
-                dto.getStudentId(), dto.getIssueType(), dto.getRoomNumber(), dto.getBuildingName());
+                authService.getCurrentUserId(), dto.getIssueType(), dto.getRoomNumber(), dto.getBuildingName());
 
-        Student student = studentService.getStudentById(dto.getStudentId());
+        Student student = studentService.getStudentById(authService.getCurrentUserId());
         Building building = buildingService.getBuildingById(dto.getBuildingId());
         Room room = roomService.getRoomById(dto.getRoomId());
 
@@ -114,6 +114,12 @@ public class MaintenanceRequestService {
         return requests.stream()
                 .map(maintenanceRequestMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public long getPendingMaintenanceRequestsCount() {
+        long count = maintenanceRequestRepository.countByStatus(MaintenanceStatus.PENDING);
+        logger.info("Pending maintenance requests count: {}", count);
+        return count;
     }
 
     @Transactional

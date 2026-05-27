@@ -24,24 +24,21 @@ public class RoomAssignmentController {
     private final RoomAssignmentService roomAssignmentService;
 
     @PostMapping
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoomAssignmentResponseDto> assignRoom(
             @Valid @RequestBody RoomAssignmentCreateDto dto) {
-        logger.info("POST /api/room-assignments — universityId: {}, roomNumber: {}",
-                dto.getUniversityId(), dto.getRoomNumber());
+        logger.info("POST /api/room-assignments — universityId: {}, building name: {}, roomNumber: {}",
+                dto.getUniversityId(), dto.getBuildingName(), dto.getRoomNumber());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(roomAssignmentService.assignRoom(dto));
     }
 
     @GetMapping
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RoomAssignmentResponseDto>> getAllAssignments() {
         logger.info("GET /api/room-assignments");
         return ResponseEntity.ok(roomAssignmentService.getAllAssignments());
     }
 
     @GetMapping("/student/{studentId}/active")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
     public ResponseEntity<RoomAssignmentResponseDto> getActiveAssignment(
             @PathVariable Long studentId) {
         logger.info("GET /api/room-assignments/student/{}/active", studentId);
@@ -49,7 +46,6 @@ public class RoomAssignmentController {
     }
 
     @GetMapping("/student/{studentId}/history")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
     public ResponseEntity<List<RoomAssignmentResponseDto>> getAssignmentHistory(
             @PathVariable Long studentId) {
         logger.info("GET /api/room-assignments/student/{}/history", studentId);
@@ -57,10 +53,16 @@ public class RoomAssignmentController {
     }
 
     @PatchMapping("/{assignmentId}/move-out")
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoomAssignmentResponseDto> moveOutStudent(
             @PathVariable Long assignmentId) {
         logger.info("PATCH /api/room-assignments/{}/move-out", assignmentId);
         return ResponseEntity.ok(roomAssignmentService.moveOutStudent(assignmentId));
+    }
+
+    @GetMapping("/count/building/{buildingId}")
+    public ResponseEntity<Long> countActiveStudentsByBuilding(
+            @PathVariable Long buildingId) {
+        logger.info("GET /api/room-assignments/count/building/{}", buildingId);
+        return ResponseEntity.ok(roomAssignmentService.countActiveStudentsByBuilding(buildingId));
     }
 }

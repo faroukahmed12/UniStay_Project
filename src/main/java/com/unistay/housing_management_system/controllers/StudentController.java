@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/students")
@@ -21,24 +23,46 @@ public class StudentController {
     private final StudentService studentService;
 
     @GetMapping
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<StudentDto>> getAllStudents() {
         logger.info("GET /api/students");
         return ResponseEntity.ok(studentService.getAllStudents());
     }
 
+
     @GetMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StudentDto> getStudentById(@PathVariable Long id) {
         logger.info("GET /api/students/{}", id);
         return ResponseEntity.ok(studentService.getStudentDtoById(id));
     }
 
     @PatchMapping("/{id}/deactivate")
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deactivateStudent(@PathVariable Long id) {
         logger.info("PATCH /api/students/{}/deactivate", id);
         studentService.deactivateStudent(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> getStudentCount() {
+        logger.info("GET /api/students/count");
+        return ResponseEntity.ok(studentService.getStudentCount());
+    }
+
+    @GetMapping("/housed/count")
+    public ResponseEntity<Long> getHousedStudentCount() {
+        logger.info("GET /api/students/housed/count");
+        return ResponseEntity.ok(studentService.getHousingStudentCount());
+    }
+
+    /*
+    @GetMapping("/stats")
+    public ResponseEntity<Map<String, Long>> getStudentStats() {
+        logger.info("GET /api/students/stats");
+        long total = studentService.getStudentCount();
+        long housed = studentService.getHousingStudentCount();
+        Map<String, Long> stats = new HashMap<>();
+        stats.put("totalStudents", total);
+        stats.put("housedStudents", housed);
+        return ResponseEntity.ok(stats);
+    }*/
 }

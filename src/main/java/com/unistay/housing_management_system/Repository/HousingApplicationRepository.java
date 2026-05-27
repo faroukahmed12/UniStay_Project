@@ -4,15 +4,17 @@ import com.unistay.housing_management_system.entity.HousingApplication;
 import com.unistay.housing_management_system.enums.HousingApplicationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface HousingApplicationRepository extends JpaRepository<HousingApplication, Long> {
 
     boolean existsByStudentIdAndStatus(Long id, HousingApplicationStatus housingApplicationStatus);
+
+    long countByStatus(HousingApplicationStatus status);
+
+    long countByStatusIn(Collection<HousingApplicationStatus> statuses);
 
     List<HousingApplication> findByStudentId(Long id);
 }

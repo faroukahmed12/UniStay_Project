@@ -4,7 +4,10 @@ import com.unistay.housing_management_system.dtos.request.MaintenanceRequestCrea
 import com.unistay.housing_management_system.dtos.request.MaintenanceRequestUpdateDto;
 import com.unistay.housing_management_system.dtos.response.MaintenanceResponseDto;
 import com.unistay.housing_management_system.enums.MaintenanceStatus;
+import com.unistay.housing_management_system.services.AdminService;
+import com.unistay.housing_management_system.services.AuthService;
 import com.unistay.housing_management_system.services.MaintenanceRequestService;
+import com.unistay.housing_management_system.services.StudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -24,18 +27,17 @@ public class MaintenanceRequestController {
     private static final Logger logger = LoggerFactory.getLogger(MaintenanceRequestController.class);
 
     private final MaintenanceRequestService maintenanceRequestService;
+    private final AuthService authService;
 
     @PostMapping
-//    @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<MaintenanceResponseDto> createRequest(
             @Valid @RequestBody MaintenanceRequestCreateDto dto) {
         logger.info("POST /api/maintenance-requests — studentId: {}, issueType: {}",
-                dto.getStudentId(), dto.getIssueType());
+                authService.getCurrentUserId(), dto.getIssueType());
         return ResponseEntity.status(HttpStatus.CREATED).body(maintenanceRequestService.createRequest(dto));
     }
 
     @GetMapping
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<MaintenanceResponseDto>> getAllRequests(
             @RequestParam(required = false) MaintenanceStatus status) {
         logger.info("GET /api/maintenance-requests — status filter: {}", status);
@@ -47,15 +49,19 @@ public class MaintenanceRequestController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/count/pending")
+    public ResponseEntity<Long> getPendingRequestsCount() {
+        logger.info("GET /api/maintenance-requests/count/pending");
+        return ResponseEntity.ok(maintenanceRequestService.getPendingMaintenanceRequestsCount());
+    }
+
     @GetMapping("/{id}")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'MAINTENANCE_STAFF')")
     public ResponseEntity<MaintenanceResponseDto> getRequestById(@PathVariable Long id) {
         logger.info("GET /api/maintenance-requests/{}", id);
         return ResponseEntity.ok(maintenanceRequestService.getRequestById(id));
     }
 
     @GetMapping("/student/{studentId}")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
     public ResponseEntity<List<MaintenanceResponseDto>> getRequestsByStudent(
             @PathVariable Long studentId) {
         logger.info("GET /api/maintenance-requests/student/{}", studentId);
@@ -63,7 +69,6 @@ public class MaintenanceRequestController {
     }
 
     @GetMapping("/staff/{staffId}")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'MAINTENANCE_STAFF')")
     public ResponseEntity<List<MaintenanceResponseDto>> getRequestsByStaff(
             @PathVariable Long staffId) {
         logger.info("GET /api/maintenance-requests/staff/{}", staffId);
@@ -71,7 +76,6 @@ public class MaintenanceRequestController {
     }
 
     @PatchMapping("/{id}")
-//    @PreAuthorize("hasAnyRole('ADMIN', 'MAINTENANCE_STAFF')")
     public ResponseEntity<MaintenanceResponseDto> updateRequest(
             @PathVariable Long id,
             @Valid @RequestBody MaintenanceRequestUpdateDto dto) {
@@ -81,7 +85,6 @@ public class MaintenanceRequestController {
     }
 
     @DeleteMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteRequest(@PathVariable Long id) {
         logger.info("DELETE /api/maintenance-requests/{}", id);
         maintenanceRequestService.deleteRequest(id);

@@ -1,5 +1,6 @@
 package com.unistay.housing_management_system.services;
 
+import com.unistay.housing_management_system.Repository.RoomAssignmentRepository;
 import com.unistay.housing_management_system.Repository.StudentRepository;
 import com.unistay.housing_management_system.dtos.response.StudentDto;
 import com.unistay.housing_management_system.entity.Student;
@@ -20,6 +21,7 @@ public class StudentService {
     private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     private final StudentRepository studentRepository;
+    private final RoomAssignmentRepository roomAssignmentRepository;
     private final StudentMapper studentMapper;
 
     public StudentDto getStudentDtoById(Long id) {
@@ -64,6 +66,20 @@ public class StudentService {
         studentRepository.save(student);
         logger.info("Student [{}] deactivated successfully", id);
     }
+
+    // create method for get count all of student
+    public Long getStudentCount() {
+        logger.info("Fetching total count of students");
+        return studentRepository.count();
+    }
+
+    // create method for get count all of housing student
+    public Long getHousingStudentCount() {
+        logger.info("Fetching total count of housing students");
+        // Count distinct students who currently have an active room assignment (moveOutDate is null)
+        return roomAssignmentRepository.countDistinctStudentsCurrentlyInHousing();
+    }
+
 
     // Helper methods
     public Student getStudentById(Long id) {

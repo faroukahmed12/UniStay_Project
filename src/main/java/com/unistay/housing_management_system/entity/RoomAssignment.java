@@ -33,6 +33,10 @@ public class RoomAssignment {
     private Student student;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "building_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Building building;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 

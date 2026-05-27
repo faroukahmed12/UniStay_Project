@@ -33,7 +33,6 @@ public class BuildingController {
     }
 
     @GetMapping
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<BuildingResponseDto>> getAllBuildings(
             @RequestParam(required = false) BuildingGenderType genderType) {
         logger.info("GET /api/buildings — genderType filter: {}", genderType);

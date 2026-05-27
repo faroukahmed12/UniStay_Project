@@ -12,6 +12,8 @@ public interface MaintenanceRequestRepository extends JpaRepository<MaintenanceR
 
     List<MaintenanceRequest> findAllByStatus(MaintenanceStatus status);
 
+    long countByStatus(MaintenanceStatus status);
+
     List<MaintenanceRequest> findAllByStudent_Id(Long studentId);
 
     List<MaintenanceRequest> findAllByAssignedStaff_Id(Long staffId);

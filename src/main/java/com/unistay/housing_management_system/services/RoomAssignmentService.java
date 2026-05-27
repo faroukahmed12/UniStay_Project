@@ -37,6 +37,15 @@ public class RoomAssignmentService {
         Room room = roomService.getRoomByNumber(dto.getRoomNumber());
         Student student = studentService.getStudentByUniversityId(dto.getUniversityId());
 
+        // Optional validation: if frontend sends buildingId, ensure the room belongs to that building
+        if (dto.getBuildingId() != null
+                && (room.getBuilding() == null
+                || room.getBuilding().getBuildingId() == null
+                || !dto.getBuildingId().equals(room.getBuilding().getBuildingId()))) {
+            throw new IllegalStateException(
+                    "Room [" + dto.getRoomNumber() + "] does not belong to building id: " + dto.getBuildingId());
+        }
+
         logger.info("Assigning room [{}] to student [{}]", room.getRoomId(), dto.getUniversityId());
 
         if (room.getStatus() == RoomStatus.OCCUPIED) {
@@ -58,6 +67,7 @@ public class RoomAssignmentService {
 
         RoomAssignment assignment = new RoomAssignment();
         assignment.setRoom(room);
+        assignment.setBuilding(room.getBuilding());
         assignment.setStudent(student);
         assignment.setAssignedBy(admin);
         assignment.setAssignmentDate(LocalDate.now());
@@ -136,4 +146,10 @@ public class RoomAssignmentService {
 
         return roomAssignmentMapper.toDto(assignment);
     }
+
+    public long countActiveStudentsByBuilding(Long buildingId) {
+        logger.info("Counting active students in building [{}]", buildingId);
+        return roomAssignmentRepository.countActiveStudentsByBuildingBuildingId(buildingId);
+    }
+
 }

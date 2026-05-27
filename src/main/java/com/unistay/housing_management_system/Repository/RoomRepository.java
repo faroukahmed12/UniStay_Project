@@ -18,4 +18,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     List<Room> findByStatus(RoomStatus roomStatus);
 
     List<Room> findByBuilding_BuildingId(Long buildingId);
+
+    List<Room> findByBuilding_BuildingNameIgnoreCaseAndStatus(String buildingName, RoomStatus roomStatus);
 }

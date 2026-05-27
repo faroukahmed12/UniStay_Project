@@ -26,7 +26,6 @@ public class RoomChangeRequestController {
     private final RoomChangeRequestService roomChangeRequestService;
 
     @PostMapping
-//    @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<RoomChangeResponseDto> createRequest(
             @Valid @RequestBody RoomChangeRequestCreateDto dto) {
         logger.info("POST /api/room-change-requests — studentUniversityId: {}, currentRoom: {}",
@@ -36,7 +35,6 @@ public class RoomChangeRequestController {
     }
 
     @GetMapping
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RoomChangeResponseDto>> getAllRequests(
             @RequestParam(required = false) RoomChangeStatus status) {
         logger.info("GET /api/room-change-requests — status filter: {}", status);

@@ -20,23 +20,13 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    // ─────────────────────────────────────────────────────────────────────────
-    //  GET /api/admins
-    //  Admin: get all admins
-    // ─────────────────────────────────────────────────────────────────────────
     @GetMapping
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<AdminDto>> getAllAdmins() {
         logger.info("GET /api/admins");
         return ResponseEntity.ok(adminService.getAllAdmins());
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    //  GET /api/admins/{id}
-    //  Admin: get a specific admin by ID
-    // ─────────────────────────────────────────────────────────────────────────
     @GetMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AdminDto> getAdminById(@PathVariable Long id) {
         logger.info("GET /api/admins/{}", id);
         return ResponseEntity.ok(adminService.getAdminDtoById(id));

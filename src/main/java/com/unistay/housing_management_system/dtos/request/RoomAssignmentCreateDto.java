@@ -10,6 +10,10 @@ public class RoomAssignmentCreateDto {
     @NotNull(message = "Student University ID is required")
     private String universityId;
 
+    // Optional (building is derived from roomNumber in backend), but allows UI to send/show chosen building
+    private Long buildingId;
+    private String buildingName;
+
     @NotNull(message = "Room Number is required")
     private String roomNumber;
 

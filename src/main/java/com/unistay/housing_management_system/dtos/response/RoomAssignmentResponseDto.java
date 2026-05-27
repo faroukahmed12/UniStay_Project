@@ -10,6 +10,7 @@ public class RoomAssignmentResponseDto {
     private LocalDate assignmentDate;
     private LocalDate moveInDate;
     private LocalDate moveOutDate;
+    private BuildingResponseDto building;
     private RoomResponseDto room;
     private StudentDto student;
     private AdminDto assignedBy;

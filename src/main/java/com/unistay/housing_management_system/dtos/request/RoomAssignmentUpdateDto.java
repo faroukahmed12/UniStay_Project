@@ -10,6 +10,10 @@ public class RoomAssignmentUpdateDto {
     @NotNull(message = "Move-in date is required")
     private LocalDate moveOutDate;
 
+    // Optional building info to validate/update room's building
+    private Long buildingId;
+    private String buildingName;
+
     @NotNull(message = "Room Number is required")
     private String roomNumber;
 }

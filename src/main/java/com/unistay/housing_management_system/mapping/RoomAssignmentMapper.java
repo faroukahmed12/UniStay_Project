@@ -21,6 +21,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {
         RoomMapper.class,
+        BuildingMapper.class,
         StudentMapper.class,
         AdminMapper.class
 })
@@ -35,6 +36,7 @@ public abstract class RoomAssignmentMapper {
     @Autowired
     private AdminRepository adminRepository;
 
+    @Mapping(source = "room.building", target = "building")
     public abstract RoomAssignmentResponseDto toDto(RoomAssignment entity);
     public abstract List<RoomAssignmentResponseDto> toDtoList(List<RoomAssignment> entities);
 
@@ -61,6 +63,8 @@ public abstract class RoomAssignmentMapper {
 
         entity.setStudent(student);
         entity.setRoom(room);
+        // ensure building is set from the resolved room
+        entity.setBuilding(room.getBuilding());
         entity.setAssignedBy(admin);
     }
 
@@ -80,5 +84,7 @@ public abstract class RoomAssignmentMapper {
         Room room = roomRepository.findByRoomNumber(dto.getRoomNumber())
                 .orElseThrow(() -> new ResourceNotFoundException("Room not found with number: " + dto.getRoomNumber()));
         entity.setRoom(room);
+        // set building from the updated room
+        entity.setBuilding(room.getBuilding());
     }
 }
